@@ -14,22 +14,23 @@ contract SupplyChain {
   // Define a public mapping 'items' that maps the UPC to an Item.
   mapping (uint => Item) items;
 
-  // Define a public mapping 'itemsHistory' that maps the UPC to an array of TxHash, 
+  // Define a public mapping 'itemsHistory' that maps the UPC to an array of TxHash,
   // that track its journey through the supply chain -- to be sent from DApp.
   mapping (uint => string[]) itemsHistory;
-  
+
   // Define enum 'State' with the following values:
-  enum State 
-  { 
-    Harvested,  // 0
-    Processed,  // 1
-    Packed,     // 2
-    ForSale,    // 3
-    Sold,       // 4
-    Shipped,    // 5
-    Received,   // 6
-    Purchased   // 7
-    }
+  enum State {
+    Harvested,      // 0
+    Packed,         // 1
+    Bought,         // 2
+    Shipped,        // 3
+    Imported,       // 4
+    Preconditioned, // 5
+    SentToRetail,   // 6
+    Received,       // 7
+    OnSale,         // 8
+    Purchased       // 9
+  }
 
   State constant defaultState = State.Harvested;
 
@@ -79,7 +80,7 @@ contract SupplyChain {
     require(msg.value >= _price); 
     _;
   }
-  
+
   // Define a modifier that checks the price and refunds the remaining balance
   modifier checkValue(uint _upc) {
     _;
@@ -99,7 +100,7 @@ contract SupplyChain {
 
     _;
   }
-  
+
   // Define a modifier that checks if an item.state of a upc is Packed
   modifier packed(uint _upc) {
 
@@ -117,7 +118,7 @@ contract SupplyChain {
 
     _;
   }
-  
+
   // Define a modifier that checks if an item.state of a upc is Shipped
   modifier shipped(uint _upc) {
 
@@ -166,9 +167,9 @@ contract SupplyChain {
   // Define a function 'processtItem' that allows a farmer to mark an item 'Processed'
   function processItem(uint _upc) public 
   // Call modifier to check if upc has passed previous supply chain stage
-  
+
   // Call modifier to verify caller of this function
-  
+
   {
     // Update the appropriate fields
     
@@ -179,9 +180,9 @@ contract SupplyChain {
   // Define a function 'packItem' that allows a farmer to mark an item 'Packed'
   function packItem(uint _upc) public 
   // Call modifier to check if upc has passed previous supply chain stage
-  
+
   // Call modifier to verify caller of this function
-  
+
   {
     // Update the appropriate fields
     
@@ -192,9 +193,9 @@ contract SupplyChain {
   // Define a function 'sellItem' that allows a farmer to mark an item 'ForSale'
   function sellItem(uint _upc, uint _price) public 
   // Call modifier to check if upc has passed previous supply chain stage
-  
+
   // Call modifier to verify caller of this function
-  
+
   {
     // Update the appropriate fields
     
@@ -276,7 +277,7 @@ contract SupplyChain {
   ) 
   {
   // Assign values to the 8 parameters
-  
+
     
   return 
   (
@@ -306,7 +307,7 @@ contract SupplyChain {
   ) 
   {
     // Assign values to the 9 parameters
-  
+
     
   return 
   (
