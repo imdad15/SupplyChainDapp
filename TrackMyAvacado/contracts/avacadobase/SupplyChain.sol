@@ -48,19 +48,22 @@ contract SupplyChain {
     string  productNotes; // Product Notes
     uint    productPrice; // Product Price
     State   itemState;  // Product State as represented in the enum above
-    address distributorID;  // Metamask-Ethereum address of the Distributor
+    address exporterID;  // Metamask-Ethereum address of the Exporter
+    address importerID;  // Metamask-Ethereum address of the Importerr
     address retailerID; // Metamask-Ethereum address of the Retailer
     address consumerID; // Metamask-Ethereum address of the Consumer
   }
 
   // Define 8 events with the same 8 state values and accept 'upc' as input argument
   event Harvested(uint upc);
-  event Processed(uint upc);
   event Packed(uint upc);
-  event ForSale(uint upc);
-  event Sold(uint upc);
+  event Bought(uint upc);
   event Shipped(uint upc);
+  event Imported(uint upc);
+  event Preconditioned(uint upc);
+  event SentToRetail(uint upc);
   event Received(uint upc);
+  event OnSale(uint upc);
   event Purchased(uint upc);
 
   // Define a modifer that checks to see if msg.sender == owner of the contract
@@ -264,62 +267,54 @@ contract SupplyChain {
   }
 
   // Define a function 'fetchItemBufferOne' that fetches the data
-  function fetchItemBufferOne(uint _upc) public view returns 
-  (
-  uint    itemSKU,
-  uint    itemUPC,
-  address ownerID,
-  address originFarmerID,
-  string  originFarmName,
-  string  originFarmInformation,
-  string  originFarmLatitude,
-  string  originFarmLongitude
-  ) 
-  {
+  function fetchItemBufferOne(uint _upc) public view returns (
+    uint    itemSKU,
+    uint    itemUPC,
+    address ownerID,
+    address originFarmerID,
+    string  originFarmName,
+    string  originFarmInformation,
+    string  originFarmLatitude,
+    string  originFarmLongitude
+  ) {
   // Assign values to the 8 parameters
-
-    
-  return 
-  (
-  itemSKU,
-  itemUPC,
-  ownerID,
-  originFarmerID,
-  originFarmName,
-  originFarmInformation,
-  originFarmLatitude,
-  originFarmLongitude
-  );
+  return (
+    itemSKU,
+    itemUPC,
+    ownerID,
+    originFarmerID,
+    originFarmName,
+    originFarmInformation,
+    originFarmLatitude,
+    originFarmLongitude
+    );
   }
 
   // Define a function 'fetchItemBufferTwo' that fetches the data
-  function fetchItemBufferTwo(uint _upc) public view returns 
-  (
-  uint    itemSKU,
-  uint    itemUPC,
-  uint    productID,
-  string  productNotes,
-  uint    productPrice,
-  uint    itemState,
-  address distributorID,
-  address retailerID,
-  address consumerID
-  ) 
-  {
-    // Assign values to the 9 parameters
-
-    
-  return 
-  (
-  itemSKU,
-  itemUPC,
-  productID,
-  productNotes,
-  productPrice,
-  itemState,
-  distributorID,
-  retailerID,
-  consumerID
-  );
+  function fetchItemBufferTwo(uint _upc) public view returns (
+    uint    itemSKU,
+    uint    itemUPC,
+    uint    productID,
+    string  productNotes,
+    uint    productPrice,
+    uint    itemState,
+    address importerID,
+    address exporterID,
+    address retailerID,
+    address consumerID
+  ) {
+    // Assign values to the 10 parameters
+    return (
+        itemSKU,
+        itemUPC,
+        productID,
+        productNotes,
+        productPrice,
+        itemState,
+        importerID,
+        exporterID,
+        retailerID,
+        consumerID
+      );
   }
 }
