@@ -6,6 +6,8 @@ import "./Roles.sol";
 // Define a contract 'ConsumerRole' to manage this role - add, remove, check
 contract ConsumerRole {
 
+  using Roles for Roles.Role;
+
   // Define 2 events, one for Adding, and other for Removing
   event ConsumerAdded(address customerAddress);
   event ConsumerRemoved(address customerAddress);
@@ -26,7 +28,7 @@ contract ConsumerRole {
 
   // Define a function 'isConsumer' to check this role
   function isConsumer(address account) public view returns (bool) {
-    Roles.has(consumers, account);
+    consumers.has(account);
   }
 
   // Define a function 'addConsumer' that adds this role
@@ -41,13 +43,13 @@ contract ConsumerRole {
 
   // Define an internal function '_addConsumer' to add this role, called by 'addConsumer'
   function _addConsumer(address account) internal {
-    Roles.add(consumers, account);
+    consumers.add(account);
     emit ConsumerAdded(account);
   }
 
   // Define an internal function '_removeConsumer' to remove this role, called by 'removeConsumer'
   function _removeConsumer(address account) internal {
-    Roles.remove(consumers, account);
+    consumers.remove(account);
     emit ConsumerRemoved(account);
   }
 }
