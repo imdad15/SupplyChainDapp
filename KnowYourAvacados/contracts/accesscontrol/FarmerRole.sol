@@ -21,7 +21,7 @@ contract FarmerRole {
 
   // Define a modifier that checks to see if msg.sender has the appropriate role
   modifier onlyFarmer() {
-    require(isFarmer(msg.sender), "The caller is not a Farmer/Harvester");
+    require(isFarmer(msg.sender), "The calling address is not a Farmer/Harvester");
     _;
   }
 
