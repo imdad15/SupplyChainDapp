@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity >0.4.24;
 // Define a contract 'Supplychain'
 contract SupplyChain {
 
@@ -89,7 +89,7 @@ contract SupplyChain {
     _;
     uint _price = items[_upc].productPrice;
     uint amountToReturn = msg.value - _price;
-    items[_upc].consumerID.transfer(amountToReturn);
+    address(uint160(items[_upc].consumerID)).transfer(amountToReturn);
   }
 
   // Define a modifier that checks if an item.state of a upc is Harvested
@@ -165,23 +165,23 @@ contract SupplyChain {
   // Define a function 'kill' if required
   function kill() public {
     if (msg.sender == owner) {
-      selfdestruct(owner);
+      selfdestruct(address(uint160(owner)));
     }
   }
 
   // Define a function 'harvestItem' that allows a farmer to mark an item 'Harvested'
-  function harvestItem(uint _upc, address _originFarmerID, string _originFarmName, string _originFarmInformation, string  _originFarmLatitude, string  _originFarmLongitude, string  _productNotes) public 
-  {
+  function harvestItem(uint _upc, address _originFarmerID, string memory _originFarmName, string memory _originFarmInformation,
+                        string memory _originFarmLatitude, string memory _originFarmLongitude, string memory _productNotes) public {
     // Add the new item as part of Harvest
     
     // Increment sku
     sku = sku + 1;
-    // Emit the appropriate event
-    
+    // Emit the event
+    emit Harvested(sku);
   }
 
   // Define a function 'processtItem' that allows a farmer to mark an item 'Processed'
-  function processItem(uint _upc) public 
+  function processItem(uint _upc) public
   // Call modifier to check if upc has passed previous supply chain stage
 
   // Call modifier to verify caller of this function
@@ -228,7 +228,7 @@ contract SupplyChain {
     // Call modifer to check if buyer has paid enough
     
     // Call modifer to send any excess ether back to buyer
-    
+    checkValue(_upc)
     {
     
     // Update the appropriate fields - ownerID, distributorID, itemState
@@ -285,10 +285,10 @@ contract SupplyChain {
     uint    itemUPC,
     address ownerID,
     address originFarmerID,
-    string  originFarmName,
-    string  originFarmInformation,
-    string  originFarmLatitude,
-    string  originFarmLongitude
+    string memory originFarmName,
+    string memory originFarmInformation,
+    string memory originFarmLatitude,
+    string memory originFarmLongitude
   ) {
   // Assign values to the 8 parameters
   return (
@@ -308,7 +308,7 @@ contract SupplyChain {
     uint    itemSKU,
     uint    itemUPC,
     uint    productID,
-    string  productNotes,
+    string memory productNotes,
     uint    productPrice,
     uint    itemState,
     address importerID,
