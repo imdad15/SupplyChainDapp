@@ -29,7 +29,7 @@ contract DistributorRole is Ownable{
 
   // Define a function 'isDistributor' to check this role
   function isDistributor(address account) public view returns (bool) {
-    distributors.has(account);
+    return distributors.has(account);
   }
 
   // Define a function 'addDistributor' that adds this role

@@ -59,8 +59,67 @@ contract('SupplyChain', function(accounts) {
 
             assert.equal(isFarmerRegistered, true, 'Error: Farmer not registered');
             assert.equal(eventEmitted, true, 'Invalid event emitted');
-        }
-    )
+        });
+
+    // 2nd Test
+    it("Testing smart contract function addDistributor() that allows a distributor to be added.", async () => {
+        const supplyChain = await SupplyChain.deployed();
+        
+        // Declare and Initialize a variable for event
+        var eventEmitted = false;
+        
+        // Watch the emitted event Harvested()
+        await supplyChain.DistributorAdded((err, res) => {
+            eventEmitted = true;
+        })                
+
+        await supplyChain.addDistributor(distributorID, {from: ownerID});
+
+        const isDistributorRegistered = await supplyChain.isDistributor(distributorID,  {from: ownerID});
+
+        assert.equal(isDistributorRegistered, true, 'Error: Distributor not registered');
+        assert.equal(eventEmitted, true, 'Invalid event emitted');
+    });
+
+    // 3rd Test
+    it("Testing smart contract function addRetailer() that allows a retailer to be added.", async () => {
+        const supplyChain = await SupplyChain.deployed();
+        
+        // Declare and Initialize a variable for event
+        var eventEmitted = false;
+        
+        // Watch the emitted event Harvested()
+        await supplyChain.RetailerAdded((err, res) => {
+            eventEmitted = true;
+        })                
+
+        await supplyChain.addRetailer(originFarmerID, {from: ownerID});
+
+        const isRetailerRegistered = await supplyChain.isRetailer(retailerID,  {from: ownerID});
+
+        assert.equal(isRetailerRegistered, true, 'Error: Retailer not registered');
+        assert.equal(eventEmitted, true, 'Invalid event emitted');
+    });
+
+    // 4th Test
+    it("Testing smart contract function addConsumer() that allows a consumer to be added.", async () => {
+        const supplyChain = await SupplyChain.deployed();
+        
+        // Declare and Initialize a variable for event
+        var eventEmitted = false;
+        
+        // Watch the emitted event Harvested()
+        await supplyChain.ConsumerAdded((err, res) => {
+            eventEmitted = true;
+        })                
+
+        await supplyChain.addConsumer(consumerID, {from: ownerID});
+
+        const isConsumerRegistered = await supplyChain.isConsumer(consumerID,  {from: ownerID});
+
+        assert.equal(isConsumerRegistered, true, 'Error: Consumer not registered');
+        assert.equal(eventEmitted, true, 'Invalid event emitted');
+    });
 
     // 1st Test
     it("Testing smart contract function harvestAvacado() that allows a farmer to harvest avacado", async() => {

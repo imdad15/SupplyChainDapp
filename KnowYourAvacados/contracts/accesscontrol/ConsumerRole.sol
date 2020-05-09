@@ -29,7 +29,7 @@ contract ConsumerRole is Ownable {
 
   // Define a function 'isConsumer' to check this role
   function isConsumer(address account) public view returns (bool) {
-    consumers.has(account);
+    return consumers.has(account);
   }
 
   // Define a function 'addConsumer' that adds this role
