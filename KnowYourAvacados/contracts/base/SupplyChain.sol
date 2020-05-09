@@ -183,6 +183,7 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
     newAvacados.avacadosState = State.Harvested;
 
     avacados[_upc] = newAvacados;
+
     // Increment sku
     sku = sku + 1;
     // Emit the event
@@ -289,8 +290,8 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
   }
 
   // Define a function 'fetchavacadosBufferOne' that fetches the data
-  function fetchavacadosBufferOne(uint _upc) public view returns (
-    uint    avacadosKU,
+  function fetchAvacadosBufferOne(uint _upc) public view returns (
+    uint    avacadosSKU,
     uint    avacadosUPC,
     address ownerID,
     address originFarmerID,
@@ -299,22 +300,23 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
     string memory originFarmLatitude,
     string memory originFarmLongitude
   ) {
+    Avacado memory avacadoBuffer = avacados[_upc];
   // Assign values to the 8 parameters
   return (
-    avacadosKU,
-    avacadosUPC,
-    ownerID,
-    originFarmerID,
-    originFarmName,
-    originFarmInformation,
-    originFarmLatitude,
-    originFarmLongitude
+      avacadosSKU = avacadoBuffer.sku,
+      avacadosUPC = avacadoBuffer.upc,
+      ownerID = avacadoBuffer.ownerID,
+      originFarmerID = avacadoBuffer.originFarmerID,
+      originFarmName = avacadoBuffer.originFarmName,
+      originFarmInformation = avacadoBuffer.originFarmInformation,
+      originFarmLatitude = avacadoBuffer.originFarmLatitude,
+      originFarmLongitude = avacadoBuffer.originFarmLongitude
     );
   }
 
   // Define a function 'fetchavacadosBufferTwo' that fetches the data
-  function fetchavacadosBufferTwo(uint _upc) public view returns (
-    uint    avacadosKU,
+  function fetchAvacadosBufferTwo(uint _upc) public view returns (
+    uint    avacadosSKU,
     uint    avacadosUPC,
     uint    productID,
     string memory productNotes,
@@ -324,17 +326,18 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
     address retailerID,
     address consumerID
   ) {
-    // Assign values to the 10 parameters
+     Avacado memory avacadoBuffer = avacados[_upc];
+    // Assign values to the 9 parameters
     return (
-        avacadosKU,
-        avacadosUPC,
-        productID,
-        productNotes,
-        productPrice,
-        avacadosState,
-        distributorID,
-        retailerID,
-        consumerID
+        avacadosSKU = avacadoBuffer.sku,
+        avacadosUPC = avacadoBuffer.upc,
+        productID = avacadoBuffer.productID,
+        productNotes = avacadoBuffer.productNotes,
+        productPrice = avacadoBuffer.productPrice,
+        avacadosState = uint(avacadoBuffer.avacadosState),
+        distributorID = avacadoBuffer.distributorID,
+        retailerID = avacadoBuffer.retailerID,
+        consumerID = avacadoBuffer.consumerID
       );
   }
 }
