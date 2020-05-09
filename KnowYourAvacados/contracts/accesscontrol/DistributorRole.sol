@@ -2,9 +2,10 @@ pragma solidity >0.4.24;
 
 // Import the library 'Roles'
 import "./Roles.sol";
+import "../core/Ownable.sol";
 
 // Define a contract 'DistributorRole' to manage this role - add, remove, check
-contract DistributorRole {
+contract DistributorRole is Ownable{
 
   using Roles for Roles.Role;
 
@@ -32,7 +33,7 @@ contract DistributorRole {
   }
 
   // Define a function 'addDistributor' that adds this role
-  function addDistributor(address account) public onlyDistributor {
+  function addDistributor(address account) public onlyOwner {
     _addDistributor(account);
   }
 

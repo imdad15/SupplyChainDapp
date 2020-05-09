@@ -2,15 +2,16 @@ pragma solidity >0.4.24;
 
 // Import the library 'Roles'
 import "./Roles.sol";
+import "../core/Ownable.sol";
 
 // Define a contract 'ConsumerRole' to manage this role - add, remove, check
-contract ConsumerRole {
+contract ConsumerRole is Ownable {
 
   using Roles for Roles.Role;
 
   // Define 2 events, one for Adding, and other for Removing
-  event ConsumerAdded(address customerAddress);
-  event ConsumerRemoved(address customerAddress);
+  event ConsumerAdded(address indexed customerAddress);
+  event ConsumerRemoved(address indexed customerAddress);
 
   // Define a struct 'consumers' by inheriting from 'Roles' library, struct Role
   Roles.Role private consumers;
@@ -32,7 +33,7 @@ contract ConsumerRole {
   }
 
   // Define a function 'addConsumer' that adds this role
-  function addConsumer(address account) public onlyConsumer {
+  function addConsumer(address account) public onlyOwner {
     _addConsumer(account);
   }
 
