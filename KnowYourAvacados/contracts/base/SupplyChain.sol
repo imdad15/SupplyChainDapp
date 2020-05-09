@@ -57,7 +57,7 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
     address consumerID; // Metamask-Ethereum address of the Consumer
   }
 
-  // Define 10 events with the same 8 state values and accept 'upc' as input argument
+  // Define 8 events with the same 8 state values and accept 'upc' as input argument
   event Harvested(uint upc);
   event Packed(uint upc);
   event Bought(uint upc);
@@ -190,30 +190,17 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
     emit Harvested(_upc);
   }
 
-  // Define a function 'processtavacados' that allows a farmer to mark an avacados 'Processed'
-  function processavacados(uint _upc) public
+  // Define a function 'packavacados' that allows a farmer to mark an avacados 'Packed'
+  function packAvacados(uint _upc) public
   // Call modifier to check if upc has passed previous supply chain stage
   harvested(_upc)
   // Call modifier to verify caller of this function
-  //verifyCaller()
+  onlyFarmer()
   {
     // Update the appropriate fields
-    
+    avacados[_upc].avacadosState = State.Packed;
     // Emit the appropriate event
-    
-  }
-
-  // Define a function 'packavacados' that allows a farmer to mark an avacados 'Packed'
-  function packAvacados(uint _upc) public 
-  // Call modifier to check if upc has passed previous supply chain stage
-
-  // Call modifier to verify caller of this function
-
-  {
-    // Update the appropriate fields
-    
-    // Emit the appropriate event
-    
+    emit Packed(_upc);
   }
 
   // Define a function 'sellavacados' that allows a farmer to mark an avacados 'ForSale'
