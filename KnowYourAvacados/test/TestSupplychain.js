@@ -14,7 +14,8 @@ contract('SupplyChain', function(accounts) {
     const originFarmLongitude = "144.341490";
     var productID = sku + upc;
     const productNotes = "Organic Hass Avacados from Mexico";
-    const productPrice = web3.utils.toWei("1", "ether");
+    const productWholeSalePrice = web3.utils.toWei("1", "ether");
+    const productRetailPrice = web3.utils.toWei("4", "ether");
     var AvacadoState = 0;
     const distributorID = accounts[2];
     const retailerID = accounts[3];
@@ -93,7 +94,7 @@ contract('SupplyChain', function(accounts) {
             eventEmitted = true;
         })                
 
-        await supplyChain.addRetailer(originFarmerID, {from: ownerID});
+        await supplyChain.addRetailer(retailerID, {from: ownerID});
 
         const isRetailerRegistered = await supplyChain.isRetailer(retailerID,  {from: ownerID});
 
@@ -121,7 +122,7 @@ contract('SupplyChain', function(accounts) {
         assert.equal(eventEmitted, true, 'Invalid event emitted');
     });
 
-    // 1st Test
+    // 5th Test
     it("Testing smart contract function harvestAvacado() that allows a farmer to harvest avacado", async() => {
         const supplyChain = await SupplyChain.deployed();
         
@@ -152,27 +153,7 @@ contract('SupplyChain', function(accounts) {
         assert.equal(eventEmitted, true, 'Invalid event emitted');
     })    
 
-    // 2nd Test
-    it("Testing smart contract function processItem() that allows a farmer to process coffee", async() => {
-        const supplyChain = await SupplyChain.deployed()
-        
-        // Declare and Initialize a variable for event
-        
-        
-        // Watch the emitted event Processed()
-        
-
-        // Mark an item as Processed by calling function processtItem()
-        
-
-        // Retrieve the just now saved item from blockchain by calling function fetchItem()
-        
-
-        // Verify the result set
-        
-    })    
-
-    // 3rd Test
+    // 6th Test
     it("Testing smart contract function packAvacado() that allows a farmer to pack avacados", async() => {
         const supplyChain = await SupplyChain.deployed()
         
@@ -182,7 +163,7 @@ contract('SupplyChain', function(accounts) {
         // Watch the emitted event Packed()
         await supplyChain.Packed((err,res)=> {
             eventEmitted = true;
-        })
+        });
         
         // Mark an Avacado as Packed by calling function packAvacado()
         await supplyChain.packAvacados(upc, {from: originFarmerID});
@@ -201,44 +182,59 @@ contract('SupplyChain', function(accounts) {
     })    
 
     // 4th Test
-    it("Testing smart contract function sellItem() that allows a farmer to sell coffee", async() => {
+    it("Testing smart contract function wholsaleAvacados() that allows a farmer to sell avacados", async() => {
         const supplyChain = await SupplyChain.deployed()
         
         // Declare and Initialize a variable for event
-        
+        var eventEmitted = false;
         
         // Watch the emitted event ForSale()
+        await supplyChain.OnWholesale((err, res) => {
+            eventEmitted = true;
+        });
         
+        // Mark an Avacado as OnWholesale by calling function wholeSaleAvacados()
+        await supplyChain.wholesaleAvacados(upc, productWholeSalePrice, {from: originFarmerID})
 
-        // Mark an item as ForSale by calling function sellItem()
+        // Retrieve the just now saved Avacado from blockchain by calling function fetchAvacado()
+        const resultBufferOne = await supplyChain.fetchAvacadosBufferOne.call(upc)
+        const resultBufferTwo = await supplyChain.fetchAvacadosBufferTwo.call(upc)
         
-
-        // Retrieve the just now saved item from blockchain by calling function fetchItem()
-        
-
         // Verify the result set
-          
+        assert.equal(resultBufferOne[0], sku, 'Error: Invalid Avacado SKU');
+        assert.equal(resultBufferOne[1], upc, 'Error: Invalid Avacado UPC');
+        assert.equal(resultBufferOne[2], originFarmerID, 'Error: Missing or Invalid ownerID');
+        assert.equal(resultBufferOne[3], originFarmerID, 'Error: Missing or Invalid originFarmerID');
+        assert.equal(resultBufferTwo[5], 2, 'Error: Invalid Avacado State');
+        assert.equal(eventEmitted, true, 'Invalid event emitted');
     })    
 
     // 5th Test
-    it("Testing smart contract function buyItem() that allows a distributor to buy coffee", async() => {
+    it("Testing smart contract function buyAvacados() that allows a distributor to buy coffee", async() => {
         const supplyChain = await SupplyChain.deployed()
         
         // Declare and Initialize a variable for event
-        
+        var eventEmitted = false;
         
         // Watch the emitted event Sold()
-        var event = supplyChain.Sold()
+        await supplyChain.Bought((err, res) => {
+            eventEmitted = true;
+        });
         
 
-        // Mark an item as Sold by calling function buyItem()
+        // Mark an Avacado as Sold by calling function buyAvacado()
+        await supplyChain.buyAvacados(upc, {from: distributorID, value: productRetailPrice})
         
-
-        // Retrieve the just now saved item from blockchain by calling function fetchItem()
-        
-
+        // Retrieve the just now saved Avacado from blockchain by calling function fetchAvacado()
+        const resultBufferOne = await supplyChain.fetchAvacadosBufferOne.call(upc);
+        const resultBufferTwo = await supplyChain.fetchAvacadosBufferTwo.call(upc);
         // Verify the result set
-        
+        assert.equal(resultBufferOne[0], sku, 'Error: Invalid Avacado SKU');
+        assert.equal(resultBufferOne[1], upc, 'Error: Invalid Avacado UPC');
+        assert.equal(resultBufferOne[2], distributorID, 'Error: Missing or Invalid ownerID');
+        assert.equal(resultBufferOne[3], originFarmerID, 'Error: Missing or Invalid originFarmerID');
+        assert.equal(resultBufferTwo[5], 3, 'Error: Invalid Avacado State');
+        assert.equal(eventEmitted, true, 'Invalid event emitted');
     })    
 
     // 6th Test

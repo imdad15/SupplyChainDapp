@@ -28,12 +28,13 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
   enum State {
     Harvested,      // 0
     Packed,         // 1
-    Bought,         // 2
-    Shipped,        // 3
-    Received,       // 4
-    Preconditioned, // 5
-    OnSale,         // 6
-    Purchased       // 7
+    OnWholesale,    // 2
+    Bought,         // 3
+    Shipped,        // 4
+    Received,       // 5
+    Preconditioned, // 6
+    OnSale,         // 7
+    Purchased       // 8
   }
 
   State constant defaultState = State.Harvested;
@@ -60,18 +61,13 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
   // Define 8 events with the same 8 state values and accept 'upc' as input argument
   event Harvested(uint upc);
   event Packed(uint upc);
+  event OnWholesale(uint _upc);
   event Bought(uint upc);
   event Shipped(uint upc);
   event Received(uint upc);
   event Preconditioned(uint upc);
   event OnSale(uint upc);
   event Purchased(uint upc);
-
-  // Define a modifer that checks to see if msg.sender == owner of the contract
-  modifier onlyOwner() {
-    require(msg.sender == owner, "Operation can be performed by owner only");
-    _;
-  }
 
   // Define a modifer that verifies the Caller
   modifier verifyCaller (address _address) {
@@ -85,8 +81,16 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
     _;
   }
 
-  // Define a modifier that checks the price and refunds the remaining balance
-  modifier checkValue(uint _upc) {
+  // Define a modifier that checks the price and refunds the remaining balance to Farmer
+  modifier checkWholesaleValue(uint _upc) {
+    _;
+    uint _price = avacados[_upc].productPrice;
+    uint amountToReturn = msg.value - _price;
+    address(uint160(avacados[_upc].distributorID)).transfer(amountToReturn);
+  }
+
+  // Define a modifier that checks the price and refunds the remaining balance to consumer
+  modifier checkSaleValue(uint _upc) {
     _;
     uint _price = avacados[_upc].productPrice;
     uint amountToReturn = msg.value - _price;
@@ -102,6 +106,12 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
   // Define a modifier that checks if an avacados.state of a upc is Packed
   modifier packed(uint _upc) {
     require(avacados[_upc].avacadosState == State.Packed, "Requires current avacados to be Packed");
+    _;
+  }
+  
+  // Define a modifier that checks if an avacados.state of a upc is on Wholesale
+  modifier onWholesale(uint _upc) {
+    require(avacados[_upc].avacadosState == State.OnWholesale, "Requires current avacados to be OnWholeSale");
     _;
   }
 
@@ -203,37 +213,42 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
     emit Packed(_upc);
   }
 
-  // Define a function 'sellavacados' that allows a farmer to mark an avacados 'ForSale'
-  function sellavacados(uint _upc, uint _price) public 
+  // Define a function 'sellavacados' that allows a farmer to mark an avacados 'OnWholesale'
+  function wholesaleAvacados(uint _upc, uint _price) public
   // Call modifier to check if upc has passed previous supply chain stage
-
+  packed(_upc)
   // Call modifier to verify caller of this function
-
+  onlyFarmer()
   {
     // Update the appropriate fields
-    
+    avacados[_upc].productPrice = _price;
+    avacados[_upc].avacadosState = State.OnWholesale;
     // Emit the appropriate event
-    
+    emit OnWholesale(_upc);
   }
 
-  // Define a function 'buyavacados' that allows the disributor to mark an avacados 'Sold'
-  // Use the above defined modifiers to check if the avacados is available for sale, if the buyer has paid enough, 
+  // Define a function 'buyavacados' that allows the disributor to mark a avacados 'Bought'
+  // Use the modifiers to check if the avacados is available on wholesale, if the distributer has paid enough,
   // and any excess ether sent is refunded back to the buyer
-  function buyavacados(uint _upc) public payable 
+  function buyAvacados(uint _upc) public payable
     // Call modifier to check if upc has passed previous supply chain stage
-    
+    onWholesale(_upc)
     // Call modifer to check if buyer has paid enough
-    
+    paidEnough(avacados[_upc].productPrice)
     // Call modifer to send any excess ether back to buyer
-    checkValue(_upc)
+    checkWholesaleValue(_upc)
+  // Call modifier to verify caller of this function
+    onlyDistributor()
     {
-    
     // Update the appropriate fields - ownerID, distributorID, avacadosState
-    
+    avacados[_upc].distributorID = msg.sender;
+    avacados[_upc].ownerID = msg.sender;
+    avacados[_upc].avacadosState = State.Bought;
     // Transfer money to farmer
-    
+    address(uint160(avacados[_upc].originFarmerID)).transfer(avacados[_upc].productPrice);
+
     // emit the appropriate event
-    
+    emit Bought(_upc);
   }
 
   // Define a function 'shipavacados' that allows the distributor to mark an avacados 'Shipped'
