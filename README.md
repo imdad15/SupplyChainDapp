@@ -10,7 +10,8 @@ This repository containts an Ethereum DApp that demonstrates a Supply Chain flow
 * [Infura](https://infura.io/) - Infura is a hosted Ethereum node cluster that lets users run application without requiring them to set up their own Ethereum node or wallet.
 
 Contract Deployed on Rinkeby Test network- 
-    SuppLYChain - 
+
+    SupplyChain - 
         Contract Address - 0x719bd614f9b864d6ec2f9548e61b52ec0c6faa77bbaed27f829b1460da50b304
         TxHash - 0x2C3e45Aa134f44fD8A3045EA542Bd5D46f966FBA
 
