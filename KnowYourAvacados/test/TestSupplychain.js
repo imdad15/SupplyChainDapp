@@ -137,7 +137,7 @@ contract('SupplyChain', function(accounts) {
         // Mark an Avacado as Harvested by calling function harvestAvacado()
         await supplyChain.harvestAvacados(upc, originFarmerID, originFarmName, originFarmInformation, originFarmLatitude, originFarmLongitude, productNotes,  {from: originFarmerID});
 
-        // Retrieve the just now saved Avacado from blockchain by calling function fetchAvacado()
+        // Retrieve the just now saved Avacado from blockchain by calling fetch
         const resultBufferOne = await supplyChain.fetchAvacadosBufferOne.call(upc);
         const resultBufferTwo = await supplyChain.fetchAvacadosBufferTwo.call(upc);
         // Verify the result set
@@ -155,7 +155,7 @@ contract('SupplyChain', function(accounts) {
 
     // 6th Test
     it("Testing smart contract function packAvacado() that allows a farmer to pack avacados", async() => {
-        const supplyChain = await SupplyChain.deployed()
+        const supplyChain = await SupplyChain.deployed();
         
         // Declare and Initialize a variable for event
         var eventEmitted = false;
@@ -165,12 +165,12 @@ contract('SupplyChain', function(accounts) {
             eventEmitted = true;
         });
         
-        // Mark an Avacado as Packed by calling function packAvacado()
+        // Mark an Avacado as Packed by calling function packAvacados()
         await supplyChain.packAvacados(upc, {from: originFarmerID});
 
-        // Retrieve the just now saved Avacado from blockchain by calling function fetchAvacado()
-        const resultBufferOne = await supplyChain.fetchAvacadosBufferOne.call(upc)
-        const resultBufferTwo = await supplyChain.fetchAvacadosBufferTwo.call(upc)
+        // Retrieve the just now saved Avacado from blockchain by calling fetch
+        const resultBufferOne = await supplyChain.fetchAvacadosBufferOne.call(upc);
+        const resultBufferTwo = await supplyChain.fetchAvacadosBufferTwo.call(upc);
         
         // Verify the result set
         assert.equal(resultBufferOne[0], sku, 'Error: Invalid Avacado SKU');
@@ -181,9 +181,9 @@ contract('SupplyChain', function(accounts) {
         assert.equal(eventEmitted, true, 'Invalid event emitted');
     })    
 
-    // 4th Test
+    // 7th Test
     it("Testing smart contract function wholsaleAvacados() that allows a farmer to sell avacados", async() => {
-        const supplyChain = await SupplyChain.deployed()
+        const supplyChain = await SupplyChain.deployed();
         
         // Declare and Initialize a variable for event
         var eventEmitted = false;
@@ -196,7 +196,7 @@ contract('SupplyChain', function(accounts) {
         // Mark an Avacado as OnWholesale by calling function wholeSaleAvacados()
         await supplyChain.wholesaleAvacados(upc, productWholeSalePrice, {from: originFarmerID})
 
-        // Retrieve the just now saved Avacado from blockchain by calling function fetchAvacado()
+        // Retrieve the just now saved Avacado from blockchain by calling fetch
         const resultBufferOne = await supplyChain.fetchAvacadosBufferOne.call(upc)
         const resultBufferTwo = await supplyChain.fetchAvacadosBufferTwo.call(upc)
         
@@ -209,9 +209,9 @@ contract('SupplyChain', function(accounts) {
         assert.equal(eventEmitted, true, 'Invalid event emitted');
     })    
 
-    // 5th Test
-    it("Testing smart contract function buyAvacados() that allows a distributor to buy coffee", async() => {
-        const supplyChain = await SupplyChain.deployed()
+    // 8th Test
+    it("Testing smart contract function buyAvacados() that allows a distributor to buy avacados", async() => {
+        const supplyChain = await SupplyChain.deployed();
         
         // Declare and Initialize a variable for event
         var eventEmitted = false;
@@ -222,10 +222,10 @@ contract('SupplyChain', function(accounts) {
         });
         
 
-        // Mark an Avacado as Sold by calling function buyAvacado()
-        await supplyChain.buyAvacados(upc, {from: distributorID, value: productRetailPrice})
+        // Mark an Avacado as Sold by calling function buyAvacados()
+        await supplyChain.buyAvacados(upc, {from: distributorID, value: productWholeSalePrice});
         
-        // Retrieve the just now saved Avacado from blockchain by calling function fetchAvacado()
+        // Retrieve the just now saved Avacado from blockchain by calling fetch
         const resultBufferOne = await supplyChain.fetchAvacadosBufferOne.call(upc);
         const resultBufferTwo = await supplyChain.fetchAvacadosBufferTwo.call(upc);
         // Verify the result set
@@ -237,9 +237,9 @@ contract('SupplyChain', function(accounts) {
         assert.equal(eventEmitted, true, 'Invalid event emitted');
     })    
 
-    // 6th Test
-    it("Testing smart contract function shipAvacado() that allows a distributor to ship coffee", async() => {
-        const supplyChain = await SupplyChain.deployed()
+    // 9th Test
+    it("Testing smart contract function shipAvacado() that allows a distributor to ship avacados", async() => {
+        const supplyChain = await SupplyChain.deployed();
         
         // Declare and Initialize a variable for event
         var eventEmitted = false;
@@ -250,9 +250,9 @@ contract('SupplyChain', function(accounts) {
         });
         
         // Mark an Avacado as Shipped by calling function shipAvacados()
-        await supplyChain.shipAvacados(upc, { from: distributorID })
+        await supplyChain.shipAvacados(upc, { from: distributorID });
 
-        // Retrieve the just now saved Avacado from blockchain by calling function fetchAvacado()
+        // Retrieve the just now saved Avacado from blockchain by calling fetch
         const resultBufferOne = await supplyChain.fetchAvacadosBufferOne.call(upc);
         const resultBufferTwo = await supplyChain.fetchAvacadosBufferTwo.call(upc);
         
