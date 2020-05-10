@@ -231,15 +231,15 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
   // Use the modifiers to check if the avacados is available on wholesale, if the distributer has paid enough,
   // and any excess ether sent is refunded back to the buyer
   function buyAvacados(uint _upc) public payable
-    // Call modifier to check if upc has passed previous supply chain stage
-    wholesale(_upc)
-    // Call modifer to check if buyer has paid enough
-    paidEnough(avacados[_upc].productPrice)
-    // Call modifer to send any excess ether back to buyer
-    checkWholesaleValue(_upc)
-  // Call modifier to verify caller of this function
-    onlyDistributor()
-    {
+  // Call modifier to check if upc has passed previous supply chain stage
+  wholesale(_upc)
+  // Call modifer to check if buyer has paid enough
+  paidEnough(avacados[_upc].productPrice)
+  // Call modifer to send any excess ether back to buyer
+  checkWholesaleValue(_upc)
+// Call modifier to verify caller of this function
+  onlyDistributor()
+  {
     // Update the appropriate fields - ownerID, distributorID, avacadosState
     avacados[_upc].distributorID = msg.sender;
     avacados[_upc].ownerID = msg.sender;
@@ -253,12 +253,12 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
 
   // function 'shipavacados' allows the distributor to mark an avacados 'Shipped'
   // Use the above modifers to check if the avacados are sold
-  function shipAvacados(uint _upc) public 
-    // Call modifier to check if upc has passed previous supply chain stage
-    bought(_upc)
-    // Call modifier to verify caller of this function
-    onlyDistributor()
-    {
+  function shipAvacados(uint _upc) public
+  // Call modifier to check if upc has passed previous supply chain stage
+  bought(_upc)
+  // Call modifier to verify caller of this function
+  onlyDistributor()
+  {
     // Update the appropriate fields
     avacados[_upc].avacadosState = State.Shipped;
     // Emit the appropriate event
@@ -268,11 +268,11 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
   // function 'receiveavacados' allows the retailer to mark an avacados 'Received'
   // Use the above modifiers to check if the avacados is shipped
   function receiveAvacados(uint _upc) public
-    // Call modifier to check if upc has passed previous supply chain stage
+  // Call modifier to check if upc has passed previous supply chain stage
   shipped(upc)
-    // Access Control List enforced by calling Smart Contract / DApp
+  // Access Control List enforced by calling Smart Contract / DApp
   onlyRetailer()
-    {
+  {
     // Update the appropriate fields - ownerID, retailerID, avacadosState
     avacados[_upc].retailerID = msg.sender;
     avacados[_upc].ownerID = msg.sender;
@@ -280,7 +280,7 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
     // Emit the appropriate event
     emit Received(_upc);
   }
-    
+
   // 'preConditionAavacados' allows the consumer to mark an avacados 'PreConditioned'
   function preConditionAvacados(uint _upc) public
   // Call modifier to check if upc has passed previous supply chain stage
@@ -293,7 +293,7 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
     // Emit the appropriate event
     emit PreConditioned(_upc);
   }
-    
+
   // function 'sellavacados' allows a farmer to mark an avacados 'OnWholesale'
   function sellAvacados(uint _upc, uint _price) public
   // Call modifier to check if upc has passed previous supply chain stage
@@ -311,15 +311,15 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
   // function 'purchaseAvacados' allows the consumer to mark an avacados 'Purchased'
   // Use the above modifiers to check if the avacados is received
   function purchaseAvacados(uint _upc) public payable
-    // Call modifier to check if upc has passed previous supply chain stage
+  // Call modifier to check if upc has passed previous supply chain stage
   onSale(_upc)
     // Call modifer to check if buyer has paid enough
   paidEnough(avacados[_upc].productPrice)
   // Call modifer to send any excess ether back to buyer
   checkRetailValue(_upc)
-    // Access Control List enforced by calling Smart Contract / DApp
+  // Access Control List enforced by calling Smart Contract / DApp
   onlyConsumer()
-    {
+  {
     // Update the appropriate fields - ownerID, retailerID, avacadosState
     avacados[_upc].consumerID = msg.sender;
     avacados[_upc].ownerID = msg.sender;
