@@ -265,14 +265,21 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
     emit Shipped(_upc);
   }
 
-  // Define a function 'receiveavacados' that allows the retailer to mark an avacados 'Received'
+  // function 'receiveavacados' allows the retailer to mark an avacados 'Received'
   // Use the above modifiers to check if the avacados is shipped
-  function receiveavacados(uint _upc) public 
+  function receiveAvacados(uint _upc) public
     // Call modifier to check if upc has passed previous supply chain stage
-    
+  shipped(upc)
     // Access Control List enforced by calling Smart Contract / DApp
+  onlyRetailer()
     {
     // Update the appropriate fields - ownerID, retailerID, avacadosState
+    avacados[_upc].retailerID = msg.sender;
+    avacados[_upc].ownerID = msg.sender;
+    avacados[_upc].avacadosState = State.Received;
+    // Emit the appropriate event
+    emit Received(_upc);
+  }
     
     // Emit the appropriate event
     
