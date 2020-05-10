@@ -281,8 +281,31 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
     emit Received(_upc);
   }
     
+  // 'preConditionAavacados' allows the consumer to mark an avacados 'PreConditioned'
+  function preConditionAvacados(uint _upc) public
+  // Call modifier to check if upc has passed previous supply chain stage
+  received(_upc)
+  // Access Control List enforced by calling Smart Contract / DApp
+  onlyRetailer()
+  {
+    // Update the avacadosState
+    avacados[_upc].avacadosState = State.PreConditioned;
     // Emit the appropriate event
+    emit PreConditioned(_upc);
+  }
     
+  // function 'sellavacados' allows a farmer to mark an avacados 'OnWholesale'
+  function sellAvacados(uint _upc, uint _price) public
+  // Call modifier to check if upc has passed previous supply chain stage
+  preconditioned(_upc)
+  // Call modifier to verify caller of this function
+  onlyRetailer()
+  {
+    // Update the appropriate fields
+    avacados[_upc].productPrice = _price;
+    avacados[_upc].avacadosState = State.OnSale;
+    // Emit the appropriate event
+    emit OnSale(upc);
   }
 
   // Define a function 'purchaseavacados' that allows the consumer to mark an avacados 'Purchased'

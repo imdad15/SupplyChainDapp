@@ -288,9 +288,29 @@ contract('SupplyChain', function(accounts) {
 
     })  
         
+     // 11th Test
+     it("Testing smart contract function preConditionAvacados() that allows a retailer to store avacados for Pre-Conditoning", async() => {
+        const supplyChain = await SupplyChain.deployed();
+
+        // Declare and Initialize a variable for event
+        var eventEmitted = false;
+             
+        // Watch the emitted event Purchased()
+        await supplyChain.PreConditioned((err, res) => {
+            eventEmitted = true;
+        });
+
+        // Mark an Avacado as Preconditioned by calling function preConditionAvacados()
+        await supplyChain.preConditionAvacados(upc, { from: retailerID })
+
+        // Retrieve the just now saved Avacado from blockchain by calling fetch
+        const resultBufferOne = await supplyChain.fetchAvacadosBufferOne.call(upc);
+        const resultBufferTwo = await supplyChain.fetchAvacadosBufferTwo.call(upc);
 
         // Verify the result set
-             
+        assert.equal(resultBufferOne[2], retailerID, 'Error: Missing or Invalid ownerID');
+        assert.equal(resultBufferTwo[5], 6, 'Error: Invalid Avacado State');
+        assert.equal(eventEmitted, true, 'Invalid event emitted');
     })    
 
     // 8th Test
