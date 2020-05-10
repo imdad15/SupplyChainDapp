@@ -45,10 +45,10 @@ contract('SupplyChain', function(accounts) {
     // 1st Test
     it("Testing smart contract function addFarmer() that allows a farmer to be added.", async () => {
             const supplyChain = await SupplyChain.deployed();
-        
-        // Declare and Initialize a variable for event
+            
+            // Declare and Initialize a variable for event
             var eventEmitted = false;
-        
+            
             // Watch the emitted event Harvested()
             await supplyChain.FarmerAdded((err, res) => {
                 eventEmitted = true;
@@ -151,7 +151,7 @@ contract('SupplyChain', function(accounts) {
         assert.equal(resultBufferOne[7], originFarmLongitude, 'Error: Missing or Invalid originFarmLongitude');
         assert.equal(resultBufferTwo[5], 0, 'Error: Invalid Avacado State');
         assert.equal(eventEmitted, true, 'Invalid event emitted');
-    })    
+    })        
 
     // 6th Test
     it("Testing smart contract function packAvacado() that allows a farmer to pack avacados", async() => {
@@ -164,14 +164,14 @@ contract('SupplyChain', function(accounts) {
         await supplyChain.Packed((err,res)=> {
             eventEmitted = true;
         });
-        
+
         // Mark an Avacado as Packed by calling function packAvacados()
         await supplyChain.packAvacados(upc, {from: originFarmerID});
 
         // Retrieve the just now saved Avacado from blockchain by calling fetch
         const resultBufferOne = await supplyChain.fetchAvacadosBufferOne.call(upc);
         const resultBufferTwo = await supplyChain.fetchAvacadosBufferTwo.call(upc);
-        
+
         // Verify the result set
         assert.equal(resultBufferOne[0], sku, 'Error: Invalid Avacado SKU');
         assert.equal(resultBufferOne[1], upc, 'Error: Invalid Avacado UPC');
@@ -192,14 +192,14 @@ contract('SupplyChain', function(accounts) {
         await supplyChain.OnWholesale((err, res) => {
             eventEmitted = true;
         });
-        
+
         // Mark an Avacado as OnWholesale by calling function wholeSaleAvacados()
         await supplyChain.wholesaleAvacados(upc, productWholeSalePrice, {from: originFarmerID})
 
         // Retrieve the just now saved Avacado from blockchain by calling fetch
         const resultBufferOne = await supplyChain.fetchAvacadosBufferOne.call(upc)
         const resultBufferTwo = await supplyChain.fetchAvacadosBufferTwo.call(upc)
-        
+
         // Verify the result set
         assert.equal(resultBufferOne[0], sku, 'Error: Invalid Avacado SKU');
         assert.equal(resultBufferOne[1], upc, 'Error: Invalid Avacado UPC');
@@ -224,7 +224,7 @@ contract('SupplyChain', function(accounts) {
 
         // Mark an Avacado as Sold by calling function buyAvacados()
         await supplyChain.buyAvacados(upc, {from: distributorID, value: productWholeSalePrice});
-        
+
         // Retrieve the just now saved Avacado from blockchain by calling fetch
         const resultBufferOne = await supplyChain.fetchAvacadosBufferOne.call(upc);
         const resultBufferTwo = await supplyChain.fetchAvacadosBufferTwo.call(upc);
@@ -248,14 +248,14 @@ contract('SupplyChain', function(accounts) {
         await supplyChain.Shipped((err, res) => {
             eventEmitted = true;
         });
-        
+
         // Mark an Avacado as Shipped by calling function shipAvacados()
         await supplyChain.shipAvacados(upc, { from: distributorID });
 
         // Retrieve the just now saved Avacado from blockchain by calling fetch
         const resultBufferOne = await supplyChain.fetchAvacadosBufferOne.call(upc);
         const resultBufferTwo = await supplyChain.fetchAvacadosBufferTwo.call(upc);
-        
+
         // Verify the result set
         assert.equal(resultBufferOne[2], distributorID, 'Error: Missing or Invalid ownerID');
         assert.equal(resultBufferTwo[5], 4, 'Error: Invalid Avacado State');
@@ -273,28 +273,28 @@ contract('SupplyChain', function(accounts) {
         await supplyChain.Received((err, res) => {
             eventEmitted = true;
         });
-        
+
         // Mark an Avacado as Received by calling function buyAvacado()
         await supplyChain.receiveAvacados(upc, { from: retailerID })
 
         // Retrieve the just now saved Avacado from blockchain by calling fetch
         const resultBufferOne = await supplyChain.fetchAvacadosBufferOne.call(upc);
         const resultBufferTwo = await supplyChain.fetchAvacadosBufferTwo.call(upc);
-        
+
         // Verify the result set
         assert.equal(resultBufferOne[2], retailerID, 'Error: Missing or Invalid ownerID');
         assert.equal(resultBufferTwo[5], 5, 'Error: Invalid Avacado State');
         assert.equal(eventEmitted, true, 'Invalid event emitted');
-
+     
     })  
-        
+    
      // 11th Test
      it("Testing smart contract function preConditionAvacados() that allows a retailer to store avacados for Pre-Conditoning", async() => {
         const supplyChain = await SupplyChain.deployed();
-
+        
         // Declare and Initialize a variable for event
         var eventEmitted = false;
-             
+        
         // Watch the emitted event Purchased()
         await supplyChain.PreConditioned((err, res) => {
             eventEmitted = true;
@@ -311,49 +311,94 @@ contract('SupplyChain', function(accounts) {
         assert.equal(resultBufferOne[2], retailerID, 'Error: Missing or Invalid ownerID');
         assert.equal(resultBufferTwo[5], 6, 'Error: Invalid Avacado State');
         assert.equal(eventEmitted, true, 'Invalid event emitted');
-    })    
+    })  
+    
 
-    // 8th Test
-    it("Testing smart contract function purchaseItem() that allows a consumer to purchase coffee", async() => {
+    // 12th Test
+    it("Testing smart contract function onSaleAvacados() that allows a retailer to put avacados OnSale", async() => {
         const supplyChain = await SupplyChain.deployed()
         
         // Declare and Initialize a variable for event
+        var eventEmitted = false;
         
+        // Watch the emitted event OnSale()
+        await supplyChain.OnSale((err, res) => {
+            eventEmitted = true;
+        });
+        
+
+        // Mark an Avacado as OnSale by calling function putOnSale
+        await supplyChain.sellAvacados(upc, productRetailPrice, { from: retailerID });
+
+        // Retrieve the just now saved Avacado from blockchain by calling fetch
+        const resultBufferOne = await supplyChain.fetchAvacadosBufferOne.call(upc);
+        const resultBufferTwo = await supplyChain.fetchAvacadosBufferTwo.call(upc);
+        // Verify the result set
+        assert.equal(resultBufferOne[2], retailerID, 'Error: Missing or Invalid ownerID');
+        assert.equal(resultBufferTwo[5], 7, 'Error: Invalid Avacado State');
+        assert.equal(eventEmitted, true, 'Invalid event emitted');
+    })    
+    
+    // 13th Test
+    it("Testing smart contract function purchaseAvacados() that allows a consumer to purchase avacados", async() => {
+        const supplyChain = await SupplyChain.deployed()
+        
+        // Declare and Initialize a variable for event
+        var eventEmitted = false;
         
         // Watch the emitted event Purchased()
-        
+        await supplyChain.Purchased((err, res) => {
+            eventEmitted = true;
+        });
 
-        // Mark an item as Sold by calling function buyItem()
-        
+        // Mark an Avacado as Purchased by calling function purchaseAvacados()
+        await supplyChain.purchaseAvacados(upc, { from: consumerID, value: productRetailPrice });
 
-        // Retrieve the just now saved item from blockchain by calling function fetchItem()
-        
+        // Retrieve the just now saved Avacado from blockchain by calling fetch
+        const resultBufferOne = await supplyChain.fetchAvacadosBufferOne.call(upc);
+        const resultBufferTwo = await supplyChain.fetchAvacadosBufferTwo.call(upc);
 
         // Verify the result set
-        
-    })    
+        assert.equal(resultBufferOne[2], consumerID, 'Error: Missing or Invalid ownerID');
+        assert.equal(resultBufferTwo[5], 8, 'Error: Invalid Avacado State');
+        assert.equal(eventEmitted, true, 'Invalid event emitted');
+    })  
+    
 
-    // 9th Test
-    it("Testing smart contract function fetchItemBufferOne() that allows anyone to fetch item details from blockchain", async() => {
+    // 14th Test
+    it("Testing smart contract function fetchAvacadoBufferOne() that allows anyone to fetch Avacado details from blockchain", async() => {
         const supplyChain = await SupplyChain.deployed()
 
-        // Retrieve the just now saved item from blockchain by calling function fetchItem()
-        
+        // Retrieve the just now saved Avacado from blockchain by calling fetch
+        const resultBufferOne = await supplyChain.fetchAvacadosBufferOne(upc, {from: ownerID})    
         
         // Verify the result set:
-        
+        assert.equal(resultBufferOne[0], sku, 'Error: Invalid Avacado SKU');
+        assert.equal(resultBufferOne[1], upc, 'Error: Invalid Avacado UPC');
+        assert.equal(resultBufferOne[2], consumerID, 'Error: Missing or Invalid ownerID');
+        assert.equal(resultBufferOne[3], originFarmerID, 'Error: Missing or Invalid originFarmerID');
+        assert.equal(resultBufferOne[4], originFarmName, 'Error: Missing or Invalid originFarmName');
+        assert.equal(resultBufferOne[5], originFarmInformation, 'Error: Missing or Invalid originFarmInformation');
+        assert.equal(resultBufferOne[6], originFarmLatitude, 'Error: Missing or Invalid originFarmLatitude');
+        assert.equal(resultBufferOne[7], originFarmLongitude, 'Error: Missing or Invalid originFarmLongitude');
     })
 
-    // 10th Test
-    it("Testing smart contract function fetchItemBufferTwo() that allows anyone to fetch item details from blockchain", async() => {
+    // 15th Test
+    it("Testing smart contract function fetchAvacadoBufferTwo() that allows anyone to fetch Avacado details from blockchain", async() => {
         const supplyChain = await SupplyChain.deployed()
 
-        // Retrieve the just now saved item from blockchain by calling function fetchItem()
-        
+        // Retrieve the just now saved Avacado from blockchain by calling fetch
+        const resultBufferTwo = await supplyChain.fetchAvacadosBufferTwo(upc, {from: ownerID});
         
         // Verify the result set:
-        
+        assert.equal(resultBufferTwo[0], sku, 'Error: Invalid item SKU')
+        assert.equal(resultBufferTwo[1], upc, 'Error: Invalid item UPC')
+        assert.equal(resultBufferTwo[2], productID, 'Error: Missing or Invalid productID')
+        assert.equal(resultBufferTwo[3], productNotes, 'Error: Missing or Invalid productNotes')
+        assert.equal(resultBufferTwo[4], productRetailPrice, 'Error: Missing or Invalid productPrice')
+        assert.equal(resultBufferTwo[5], 8, 'Error: Invalid item State')
+        assert.equal(resultBufferTwo[6], distributorID, 'Error: Missing or Invalid distributorID')
+        assert.equal(resultBufferTwo[7], retailerID, 'Error: Missing or Invalid retailerID')
+        assert.equal(resultBufferTwo[8], consumerID, 'Error: Missing or Invalid consumerID')
     })
-
 });
-

@@ -308,20 +308,27 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
     emit OnSale(upc);
   }
 
-  // Define a function 'purchaseavacados' that allows the consumer to mark an avacados 'Purchased'
+  // function 'purchaseAvacados' allows the consumer to mark an avacados 'Purchased'
   // Use the above modifiers to check if the avacados is received
-  function purchaseavacados(uint _upc) public 
+  function purchaseAvacados(uint _upc) public payable
     // Call modifier to check if upc has passed previous supply chain stage
-    
+  onSale(_upc)
+    // Call modifer to check if buyer has paid enough
+  paidEnough(avacados[_upc].productPrice)
+  // Call modifer to send any excess ether back to buyer
+  checkRetailValue(_upc)
     // Access Control List enforced by calling Smart Contract / DApp
+  onlyConsumer()
     {
-    // Update the appropriate fields - ownerID, consumerID, avacadosState
-    
+    // Update the appropriate fields - ownerID, retailerID, avacadosState
+    avacados[_upc].consumerID = msg.sender;
+    avacados[_upc].ownerID = msg.sender;
+    avacados[_upc].avacadosState = State.Purchased;
     // Emit the appropriate event
-    
+    emit Purchased(upc);
   }
 
-  // Define a function 'fetchavacadosBufferOne' that fetches the data
+  // function 'fetchavacadosBufferOne' fetches the data
   function fetchAvacadosBufferOne(uint _upc) public view returns (
     uint    avacadosSKU,
     uint    avacadosUPC,
@@ -346,7 +353,7 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
     );
   }
 
-  // Define a function 'fetchavacadosBufferTwo' that fetches the data
+  // function 'fetchavacadosBufferTwo' fetches the data
   function fetchAvacadosBufferTwo(uint _upc) public view returns (
     uint    avacadosSKU,
     uint    avacadosUPC,
