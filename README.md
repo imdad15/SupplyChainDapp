@@ -5,8 +5,9 @@ This repository containts an Ethereum DApp that demonstrates a Supply Chain flow
 
 ## Built With
 
-* [Ethereum](https://www.ethereum.org/) - Ethereum is a decentralized platform that runs smart contracts
+* [Ethereum](https://www.ethereum.org/) - Ethereum is a decentralized platform that runs smart contracts.
 * [Truffle Framework](http://truffleframework.com/) - Truffle is the most popular development framework for Ethereum with a mission to make your life a whole lot easier.
+* [Infura](https://infura.io/) - Infura is a hosted Ethereum node cluster that lets users run application without requiring them to set up their own Ethereum node or wallet.
 
 Contract Deployed on Rinkeby Test network- 
     SuppLYChain - 
