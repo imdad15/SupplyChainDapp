@@ -4,9 +4,10 @@ import "../accesscontrol/ConsumerRole.sol";
 import "../accesscontrol/DistributorRole.sol";
 import "../accesscontrol/FarmerRole.sol";
 import "../accesscontrol/RetailerRole.sol";
+import "../core/Ownable.sol";
 
 // Contract 'Supplychain'
-contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole {
+contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole, Ownable {
 
   // 'owner'
   address owner;
@@ -177,7 +178,7 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
     string memory _originFarmLatitude,
     string memory _originFarmLongitude,
     string memory _productNotes
-    ) public onlyFarmer() {
+    ) public onlyFarmer {
     // Add the new avacados as part of Harvest
     Avacado memory newAvacados;
     newAvacados.sku = sku;
@@ -204,8 +205,10 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
   function packAvacados(uint _upc) public
   // Call modifier to check if upc has passed previous supply chain stage
   harvested(_upc)
-  // Call modifier to verify caller of this function
-  onlyFarmer()
+ // Call modifier to verify caller of this function
+  verifyCaller(avacados[_upc].ownerID)
+  onlyFarmer
+
   {
     // Update the appropriate fields
     avacados[_upc].avacadosState = State.Packed;
@@ -218,7 +221,8 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
   // Call modifier to check if upc has passed previous supply chain stage
   packed(_upc)
   // Call modifier to verify caller of this function
-  onlyFarmer()
+  verifyCaller(avacados[_upc].ownerID)
+  onlyFarmer
   {
     // Update the appropriate fields
     avacados[_upc].productPrice = _price;
@@ -237,8 +241,8 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
   paidEnough(avacados[_upc].productPrice)
   // Call modifer to send any excess ether back to buyer
   checkWholesaleValue(_upc)
-// Call modifier to verify caller of this function
-  onlyDistributor()
+  // Call modifier to verify caller of this function
+  onlyDistributor
   {
     // Update the appropriate fields - ownerID, distributorID, avacadosState
     avacados[_upc].distributorID = msg.sender;
@@ -257,7 +261,8 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
   // Call modifier to check if upc has passed previous supply chain stage
   bought(_upc)
   // Call modifier to verify caller of this function
-  onlyDistributor()
+  verifyCaller(avacados[_upc].ownerID)
+  onlyDistributor
   {
     // Update the appropriate fields
     avacados[_upc].avacadosState = State.Shipped;
@@ -271,7 +276,7 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
   // Call modifier to check if upc has passed previous supply chain stage
   shipped(upc)
   // Access Control List enforced by calling Smart Contract / DApp
-  onlyRetailer()
+  onlyRetailer
   {
     // Update the appropriate fields - ownerID, retailerID, avacadosState
     avacados[_upc].retailerID = msg.sender;
@@ -285,8 +290,9 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
   function preConditionAvacados(uint _upc) public
   // Call modifier to check if upc has passed previous supply chain stage
   received(_upc)
-  // Access Control List enforced by calling Smart Contract / DApp
-  onlyRetailer()
+  // Call modifier to verify caller of this function
+  verifyCaller(avacados[_upc].ownerID)
+  onlyRetailer
   {
     // Update the avacadosState
     avacados[_upc].avacadosState = State.PreConditioned;
@@ -299,7 +305,8 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
   // Call modifier to check if upc has passed previous supply chain stage
   preconditioned(_upc)
   // Call modifier to verify caller of this function
-  onlyRetailer()
+  verifyCaller(avacados[_upc].ownerID)
+  onlyRetailer
   {
     // Update the appropriate fields
     avacados[_upc].productPrice = _price;
@@ -318,7 +325,7 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
   // Call modifer to send any excess ether back to buyer
   checkRetailValue(_upc)
   // Access Control List enforced by calling Smart Contract / DApp
-  onlyConsumer()
+  onlyConsumer
   {
     // Update the appropriate fields - ownerID, retailerID, avacadosState
     avacados[_upc].consumerID = msg.sender;
