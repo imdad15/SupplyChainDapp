@@ -2,10 +2,9 @@ pragma solidity >0.4.24;
 
 // Import the library 'Roles'
 import "./Roles.sol";
-import "../core/Ownable.sol";
 
 // Define a contract 'FarmerRole' to manage this role - add, remove, check
-contract FarmerRole is Ownable {
+contract FarmerRole {
   using Roles for Roles.Role;
 
   // Define 2 events, one for Adding, and other for Removing
@@ -32,7 +31,7 @@ contract FarmerRole is Ownable {
   }
 
   // Define a function 'addFarmer' that adds this role
-  function addFarmer(address account) public onlyOwner {
+  function addFarmer(address account) public onlyFarmer {
     _addFarmer(account);
   }
 

@@ -2,10 +2,9 @@ pragma solidity >0.4.24;
 
 // Import the library 'Roles'
 import "./Roles.sol";
-import "../core/Ownable.sol";
 
 // Define a contract 'ConsumerRole' to manage this role - add, remove, check
-contract ConsumerRole is Ownable {
+contract ConsumerRole {
 
   using Roles for Roles.Role;
 
@@ -33,7 +32,7 @@ contract ConsumerRole is Ownable {
   }
 
   // Define a function 'addConsumer' that adds this role
-  function addConsumer(address account) public onlyOwner {
+  function addConsumer(address account) public onlyConsumer {
     _addConsumer(account);
   }
 

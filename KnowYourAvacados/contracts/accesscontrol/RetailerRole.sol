@@ -2,10 +2,9 @@ pragma solidity >0.4.24;
 
 // Import the library 'Roles'
 import "./Roles.sol";
-import "../core/Ownable.sol";
 
 // Define a contract 'RetailerRole' to manage this role - add, remove, check
-contract RetailerRole is Ownable {
+contract RetailerRole {
 
   using Roles for Roles.Role;
 
@@ -33,7 +32,7 @@ contract RetailerRole is Ownable {
   }
 
   // Define a function 'addRetailer' that adds this role
-  function addRetailer(address account) public onlyOwner {
+  function addRetailer(address account) public onlyRetailer {
     _addRetailer(account);
   }
 
